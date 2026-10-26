@@ -88,7 +88,7 @@ Desktop/Organized/
 
 ## 🚀 Quick Start (Pre-Built Release)
 
-### 🪟 Windows:
+###  Windows:
 1. Download `Local-File-Organizer-v1.0.0.zip` from [Releases](https://github.com/ihsan896/Local-File-Organizer-Qwen-Ai-version-/releases).
 2. Extract the archive.
 3. *(Optional for AI Mode)* Install [Ollama](https://ollama.com) and pull the model:
@@ -145,7 +145,7 @@ python main.py      # Interactive CLI mode
 
 ---
 
-## 🤝 Attribution & Acknowledgements
+##  Attribution & Referance
 
 - **Maintained & Enhanced by:** [Ihsan-AI](https://github.com/ihsan896)
 - **Upstream Project:** Forked and enhanced from [QiuYannnn/Local-File-Organizer](https://github.com/QiuYannnn/Local-File-Organizer) (MIT License). Upgraded from legacy Nexa SDK to local Ollama inference, cross-platform packaging, bilingual GUI, and modern dark theme.
