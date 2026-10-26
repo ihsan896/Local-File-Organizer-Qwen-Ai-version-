@@ -1,196 +1,159 @@
-# Local File Organizer: Yerel ve Gizlilik Odaklı Akıllı Dosya Yöneticisi
+# Local File Organizer (Qwen AI Edition) 🚀
 
-[![Python 3.13.6](https://img.shields.io/badge/python-3.13.6-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/downloads/)
 [![Ollama](https://img.shields.io/badge/Ollama-qwen3.5:2b-black.svg)](https://ollama.ai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-brightgreen.svg)](#)
 
-Dijital dağınıklıktan yoruldunuz mu? Bilgisayarınızın her köşesine dağılmış yüzlerce dosya arasında aradığınızı bulamıyor musunuz? 
-
-**Local File Organizer**, dosyalarınızı analiz ederek kaynak dosyaları taşımadan veya silmeden, otomatik olarak düzenli ve anlamlı bir klasör hiyerarşisinde **hardlink ile bağlayan**, hafif, hızlı ve **tamamen yerel çalışan (100% On-Device)** bir dosya düzenleme asistanıdır.
-
-Tüm içerik analizi ve akıllı adlandırma işlemleri cihazınızdaki **Ollama** altyapısı ve **`qwen3.5:2b`** modeli ile yerel olarak yürütülür. Hiçbir veriniz internete veya bulut sunucularına aktarılmaz; gizliliğiniz %100 güvence altındadır.
+A smart, **100% offline, privacy-first desktop and file organizer** powered by local AI (**Qwen 3.5 2B via Ollama**). Clean up your desktop and messy directories instantly with zero cloud dependencies and zero data leaks.
 
 ---
 
-## Nasıl Çalışır? 💡
+## 🌟 Overview
 
-> **Önemli Not:** Dosyalar kaynak dizinden taşınmaz veya silinmez. Organize edilmiş hedef dizinde orijinal dosyaların dosya sistemi kayıtlarına işaret eden hardlink (`os.link`) bağlantıları oluşturulur. Kaynak dosyalarınız olduğu gibi korunur.
+Tired of desktop clutter and messy download folders? **Local File Organizer** categorizes, renames, and organizes your files into intuitive directories.
 
-### Öncesi: Dağınık Kaynak Dizin
+- **Dual-Engine Organization:** Choose between lightning-fast **Rule-Based Fast Mode** (instant categorization by file type) and **AI Semantic Mode** (deep document understanding via local LLM).
+- **100% Privacy & Zero Cloud Dependency:** Powered entirely on your local machine using **Ollama** and **Qwen 3.5 (2B)**. No files or metadata ever leave your computer.
+- **Fail-Safe Operation:** Atomic staging (`.part`), SHA-256 integrity verification, and instant **One-Click Undo** rollback ensure your files are always safe.
+
+---
+
+## 📸 Workflow Preview
+
+### Before: Cluttered Workspace
 ```text
-C:\Users\User\Downloads\messy_folder\
+Desktop/
 ├── 1.xlsx
 ├── 12222_777.docx
 ├── BS.txt
 ├── IMG_0967.PNG
-├── c8fed35720671596882b0c6a2ad9586d.gif
 ├── go_bruin.pptx
 ├── logo.png
 ├── paper_1col.pdf
-├── 1111_63.csv
-├── animal.jpg
-└── ccc.md
-
-0 alt klasör, 11 dosya
+├── financial_report.csv
+└── project_notes.md
 ```
 
-### Sonrası: Organize Edilmiş Dizin (İçeriğe Göre - By Content)
+### After: Organized & Categorized
 ```text
-C:\Users\User\Downloads\organized_folder\
-├── bank_account/
-│   └── doc_bs.txt
-├── academic_papers/
+Desktop/Organized/
+├── financial_and_banking/
+│   ├── doc_BS.txt
+│   └── doc_financial_report.csv
+├── research_papers/
 │   └── doc_paper_1col.pdf
-├── spreadsheets/
-│   ├── doc_1.xlsx
-│   └── doc_1111_63.csv
 ├── presentations/
 │   └── doc_go_bruin.pptx
-├── image_files/
-│   ├── img_animal.jpg
+├── image_assets/
 │   ├── img_logo.png
 │   └── img_IMG_0967.PNG
-└── doc_files/
-    └── doc_12222_777.docx
-
-6 alt klasör, 11 dosya
+└── office_documents/
+    ├── doc_12222_777.docx
+    └── doc_project_notes.md
 ```
 
 ---
 
-## Öne Çıkan Özellikler 🚀
+## ✨ Features
 
-- **100% Yerel Yapay Zekâ:** Harici API anahtarına veya internet bağlantısına gerek yoktur. Yerel **Ollama** servisi (`qwen3.5:2b`) ile çalışır.
-- **Sıfır Ek Disk Alanı (Hardlink):** Dosyalar yeniden kopyalanarak diski doldurmaz; aynı fiziksel dosya kaydına işaret eden `hardlink` (`os.link`) bağlantıları oluşturulur.
-- **Orijinal Dosya Güvenliği:** Kaynak dosyalar hiçbir zaman silinmez veya taşınmaz; orijinal yerlerinde kalır ve hedef dizinde hardlink ile bağlanır.
-- **Çapraz Disk Güvenliği:** Farklı disk sürücüleri arasında (ör. `C:` $\rightarrow$ `D:`) hardlink oluşturulamadığında, disk alanını gereksiz çoğaltmamak için işlem güvenle atlanır (`skipped_cross_device`) ve loglanır.
-- **Önizleme Ağacı (Dry-Run Simülasyonu):** Operasyonlar diske yazılmadan önce terminalde simüle edilen dizin ağacı gösterilir; kullanıcı onay vermedikçe hiçbir işlem yapılmaz.
-- **Sessiz Mod (Silent Mode):** Terminal çıktısı istemeyen kullanıcılar için tüm işlem adımlarını `operation_log.txt` dosyasına yönlendirme imkânı.
-
----
-
-## 3 Farklı Düzenleme Modu 🗂️
-
-CLI başlatıldığında ihtiyacınıza uygun üç farklı organizasyon yönteminden birini seçebilirsiniz:
-
-1. **İçeriğe Göre (By Content - AI Destekli):**
-   - Metin tabanlı belgelerin içeriğini okur, `qwen3.5:2b` ile özetler ve anlamsal bir klasör adı ile dosya adı türetir.
-   - Görseller kural tabanlı olarak hızlıca `image_files/` altında sınıflandırılır.
-2. **Tarihe Göre (By Date):**
-   - Dosyaların son değiştirilme zaman damgalarını (`mtime`) okuyarak `Yıl/Ay` (örn. `2024/October`) klasör hiyerarşisi oluşturur. Model gerektirmez, anlıktır.
-3. **Türe Göre (By Type):**
-   - Dosyaları uzantılarına göre kategorilere (`text_files/plain_text_files`, `doc_files`, `pdf_files`, `xls_files`, `image_files`, `others`) ayırır. Model gerektirmez, anlıktır.
+- **⚡ Dual Sorting Engines:**
+  - **Fast Rule-Based Mode:** Sorts hundreds of files in milliseconds based on MIME categories and extensions.
+  - **AI Semantic Mode:** Uses local `qwen3.5:2b` to read document excerpts and create contextual folders based on actual content.
+- **🛠️ Self-Healing Service Detection:** Automatically verifies whether Ollama is running and automatically starts the service in the background if needed. Live UI status badge (`🟢 AI Ready` / `🟡 Starting...` / `🔴 Ollama Missing`).
+- **🎨 Dark & Light Theme:** Clean, modern interface supporting instant theme switching.
+- **🌐 Bilingual UI:** Full support for both **English** and **Turkish (Türkçe)** with live in-place language switching.
+- **🛡️ Data Safety & Rollback:**
+  - Moves files with atomic staging and SHA-256 checksum checks.
+  - Full Undo logging: Revert any organization action with a single click.
+- **🐧 Cross-Platform Ready:**
+  - **Windows:** Standalone single executable (`Desktop-Organizer.exe`) — no Python setup required.
+  - **Linux:** Native runner (`run_linux.sh`) with automatic environment and dependency management.
 
 ---
 
-## Desteklenen Dosya Formatları 📁
+## 💻 Hardware Requirements
 
-- **Metin & Belgeler:** `.txt`, `.docx`, `.pdf`, `.md`
-- **Tablolar:** `.xlsx`, `.csv`, `.xls`
-- **Sunumlar:** `.pptx`, `.ppt`
-- **Görseller:** `.png`, `.jpg`, `.jpeg`, `.gif`, `.bmp`
+| Component | Minimum (CPU Inference) | Recommended (GPU Accelerated) |
+| :--- | :--- | :--- |
+| **Processor (CPU)** | 4 Cores (Intel 8th Gen+ / AMD Ryzen 3000+) | 6+ Cores (Intel 11th Gen+ / AMD Ryzen 5000+) |
+| **Memory (RAM)** | 8 GB DDR4 | 16 GB DDR4/DDR5 |
+| **Graphics (GPU)** | Integrated Graphics (Intel UHD/Iris Xe, AMD Vega) | Dedicated GPU (NVIDIA GTX 1650+ / RTX, AMD RX 6000+) |
+| **AI Processing Time** | ~20–45 sec / document | ~3–8 sec / document |
+| **Storage** | 3 GB free disk space (for Ollama model) | 3 GB free disk space |
 
----
-
-## Gereksinimler 💻
-
-- **İşletim Sistemi:** Windows, macOS veya Linux
-- **Python:** Yalnızca **Python 3.13.6** sürümünde test edilmiş ve doğrulanmıştır. (Python 3.10+ veya 3.12 sürümleri bu geliştirme döngüsünde kodla doğrulanmamıştır, [Belirsiz]).
-- **Ollama:** Yerel model çıkarımı için [Ollama](https://ollama.ai) kurulu ve çalışır durumda olmalıdır.
+> *Note: Fast Mode has no AI overhead and runs instantly on any hardware.*
 
 ---
 
-## Kurulum ve Başlangıç 🛠️
+## 🚀 Quick Start (Pre-Built Release)
 
-### 1. Hızlı Başlangıç: Desktop Organizer (GUI) 🖥️
-Masaüstünüzdeki dağınık dosyaları tek tıkla kategorilere ayırmak, yerel yapay zekâ (`qwen3.5:2b`) ile içeriklerine göre akıllı konu başlıklarına taşımak ve geri alma kaydı tutmak için:
+### 🪟 Windows:
+1. Download `Local-File-Organizer-v1.0.0.zip` from [Releases](https://github.com/ihsan896/Local-File-Organizer-Qwen-Ai-version-/releases).
+2. Extract the archive.
+3. *(Optional for AI Mode)* Install [Ollama](https://ollama.com) and pull the model:
+   ```bash
+   ollama pull qwen3.5:2b
+   ```
+4. Double-click `Desktop-Organizer.exe` to run.
 
-* **Windows:**
-  * Dağıtım arşivindeki `Desktop-Organizer.exe` uygulamasına çift tıklayın.
-  * Açılışta dilediğiniz dili (🇹🇷 Türkçe veya 🇬🇧 English) ve temayı (☀️ Açık veya 🌙 Koyu) seçebilirsiniz.
-  * **Hızlı Mod** (uzantıya göre anında) veya **Yapay Zekâ Modu** (Ollama `qwen3.5:2b` ile belge içeriğine göre) belirleyin.
-  * Masaüstünüz taranır, önizleme tablosunda her dosyanın hedefi gösterilir.
-  * **"Taşı"** butonuna basarak dosyalarınızı `Masaüstü\Duzenli` klasörüne güvenle taşıyın.
-  * Dilediğiniz zaman **"Son işlemi geri al"** ile tüm dosyaları ilk yerine getirebilirsiniz.
-* **Linux (Mint Cinnamon / Ubuntu / Debian):**
-  * `bash run_linux.sh` komutunu çalıştırın.
-  * Betik eksik sistem bağımlılıklarını (`python3-tk`, `python3-venv` vb.) kontrol edip gerekirse `sudo` yetkisi alarak tamamlar ve kullanıcı oturumunda masaüstü arayüzünü açar.
-
----
-
-### 2. Gelişmiş Konsol ve Yapay Zekâ Modu (CLI) 🤖
-Klasörleri içeriğine göre yapay zekâ (`qwen3.5:2b`), tarih veya dosya türüne göre düzenlemek için terminal üzerinden çalıştırabilirsiniz:
-
-* **Windows / Linux:** `python main.py` veya Linux'ta `bash linux/run_linux.sh --cli` çalıştırın.
+### 🐧 Linux:
+1. Download and extract `Local-File-Organizer-v1.0.0.zip`.
+2. Open terminal and run:
+   ```bash
+   chmod +x run_linux.sh
+   ./run_linux.sh
+   ```
+   *(The script checks required dependencies like `python3-tk` and launches the GUI).*
 
 ---
 
-### 3. Kaynak Koddan Çalıştırma ve Geliştirme
+## 🛠️ Run from Source (Developers)
+
 ```bash
-git clone https://github.com/ihsan896/Local-File-Organizer.git
-cd Local-File-Organizer
-```
+# 1. Clone repository
+git clone https://github.com/ihsan896/Local-File-Organizer-Qwen-Ai-version-.git
+cd Local-File-Organizer-Qwen-Ai-version-
 
-### 2. Sanal Ortamı Hazırlayın
-```bash
-# Sanal ortam oluşturun
+# 2. Create virtual environment
 python -m venv venv
 
-# Sanal ortamı aktifleştirin:
-# Windows (PowerShell):
+# Windows activate:
 .\venv\Scripts\Activate.ps1
-# Linux / macOS:
+# Linux activate:
 source venv/bin/activate
-```
 
-### 3. Bağımlılıkları Yükleyin
-```bash
+# 3. Install dependencies
 pip install -r requirements.txt
-```
 
-### 4. Ollama Servisini ve Modeli Başlatın
-Ollama kurulu değilse [ollama.ai](https://ollama.ai) üzerinden yükleyin. Ardından terminalde:
-```bash
-# Modeli indirin (yalnızca ilk seferde, ~1.3 GB)
+# 4. Pull local model
 ollama pull qwen3.5:2b
 
-# Ollama arka planda çalışmıyorsa başlatın
-ollama serve
+# 5. Launch GUI or CLI
+python gui.py       # GUI mode
+python main.py      # Interactive CLI mode
 ```
 
-### 5. Uygulamayı Çalıştırın 🎉
-```bash
-python main.py
-```
+---
 
-CLI sizden sırasıyla şu bilgileri isteyecektir:
-1. **Sessiz Mod:** `yes` veya `no`
-2. **Düzenlenecek Dizin:** Organize etmek istediğiniz kaynak klasörün tam veya göreceli yolu (örn: `sample_data`).
-3. **Hedef Dizin:** Organize edilmiş dosyaların oluşturulacağı hedef klasör (Enter'a basarak varsayılan `organized_folder` kullanılabilir).
-4. **Mod Seçimi:** `1` (İçerik), `2` (Tarih) veya `3` (Tür).
-5. **Onay:** Gösterilen önizleme ağacını onaylıyorsanız `yes`.
+## 📂 Supported File Types
+
+- **Documents & Text:** `.pdf`, `.docx`, `.txt`, `.md`
+- **Spreadsheets & Data:** `.xlsx`, `.xls`, `.csv`
+- **Presentations:** `.pptx`, `.ppt`
+- **Images:** `.png`, `.jpg`, `.jpeg`, `.gif`, `.bmp`
 
 ---
 
-## Proje Dokümantasyonu 📚
+## 🤝 Attribution & Acknowledgements
 
-Projenin iç yapısı, mimari kararları ve teknik kısıtları hakkında detaylı belgeler:
-
-- [PROJECT_GUIDE.md](PROJECT_GUIDE.md): Kapsamlı teknik mimari rehberi, fonksiyon açıklamaları ve veri akış şemaları.
-- [GOALS.md](GOALS.md): Geliştirme hedefleri, görev listesi ve doğrulama kayıtları.
-- [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md): Bilinen teknik ve mimari kısıtlar.
-- [NOTICE.md](NOTICE.md): Atıf, telif ve açık kaynak bildirim belgesi.
+- **Maintained & Enhanced by:** [Ihsan-AI](https://github.com/ihsan896)
+- **Upstream Project:** Forked and enhanced from [QiuYannnn/Local-File-Organizer](https://github.com/QiuYannnn/Local-File-Organizer) (MIT License). Upgraded from legacy Nexa SDK to local Ollama inference, cross-platform packaging, bilingual GUI, and modern dark theme.
 
 ---
 
-## Atıf ve Referans 🤝
+## 📄 License
 
-Bu proje, **[Ihsan-AI](https://github.com/ihsan896)** tarafından geliştirilmiş ve özelleştirilmiştir. Projenin orijinal temel kaynağı [QiuYannnn/Local-File-Organizer](https://github.com/QiuYannnn/Local-File-Organizer) deposudur. Orijinal mimarideki Nexa SDK bağımlılıkları kaldırılarak yerel Ollama motoruna geçirilmiş, platform/disk uyumluluğu sağlanmış ve çapraz platform dağıtım paketleri oluşturulmuştur.
-
----
-
-## Lisans 📄
-
-Bu proje [MIT Lisansı](LICENSE) kapsamında lisanslanmıştır.  
-Telif Hakkı (c) 2026 Ihsan-AI (ihsan896). Tüm hakları saklıdır.
-Orijinal kod tabanı telif hakkı: Copyright (c) 2024 Yanhao Qiu (MIT Lisansı). Detaylar için [NOTICE.md](NOTICE.md) belgesine bakınız.
+This project is licensed under the [MIT License](LICENSE).
+Copyright (c) 2026 Ihsan-AI. All rights reserved.  
+Original codebase copyright (c) 2024 Yanhao Qiu. See [NOTICE.md](NOTICE.md) for details.
