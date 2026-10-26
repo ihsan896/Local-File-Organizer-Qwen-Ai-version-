@@ -1,0 +1,41 @@
+# Byte-compiled Python files
+__pycache__/
+*.py[cod]
+*.pyc
+
+# pytest cache directory
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Virtual environment folders
+env/
+venv/
+
+# Ignore log files and temporary files
+*.log
+*.tmp
+*.swp
+
+# Ignore example output files
+organized_folder/
+operation_log.txt
+
+# Backup and test organizer files
+*.bak
+test_organizer/
+*.T2fix.bak
+*.T3fix.bak
+*.T6pre.bak
+*.T6fix.bak
+*.T8pre.bak
+
+# Packaging and distribution build artifacts
+build/
+dist/
+*.spec
+release/
+release_bundle/
+*.zip
+*.deb
